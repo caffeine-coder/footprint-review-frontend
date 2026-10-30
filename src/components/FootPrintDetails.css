@@ -67,8 +67,8 @@
     border-left: 2px solid #e5e7eb;
 }
 
-.history-entry+.history-entry {
-    margin-top: 4px;
+.history-entry {
+    margin-bottom: 4px;
 }
 
 .history-entry strong {

@@ -43,12 +43,6 @@ const footprintSlice = createSlice({
         setError: (state, action: PayloadAction<string | null>) => {
             state.error = action.payload;
         },
-        updateFootprint: (state, action: PayloadAction<ProductFootPrint>) => {
-            const index = state.footprintData.findIndex(footprint => footprint.id === action.payload.id);
-            if (index !== -1) {
-                state.footprintData[index] = action.payload;
-            }
-        }
     }
 });
 

@@ -33,11 +33,6 @@ h2 {
     flex-wrap: wrap;
 }
 
-
-.filter-container .mantine-Select-root {
-    width: 220px;
-}
-
 .filter-field {
     width: 220px;
 }
