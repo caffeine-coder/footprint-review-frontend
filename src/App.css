@@ -27,9 +27,21 @@ h2 {
 
 .filter-container {
     display: flex;
-    margin-bottom: 20px;
+    align-items: flex-end;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
 }
+
 
 .filter-container .mantine-Select-root {
     width: 220px;
+}
+
+.filter-field {
+    width: 220px;
+}
+
+.search-field {
+    width: 300px;
 }

@@ -1,0 +1,52 @@
+.details-container {
+    padding: 4px 0 12px;
+}
+
+.details-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 16px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.details-heading h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.details-row {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 12px;
+    padding: 11px 0;
+    border-bottom: 1px solid #f1f3f5;
+    font-size: 14px;
+    color: #1f2937;
+}
+
+.details-row:last-child {
+    border-bottom: none;
+}
+
+.details-label {
+    color: #6b7280;
+    font-weight: 500;
+}
+
+
+.review-section {
+    border-top: 1px solid #e5e7eb;
+    margin-top: 16px;
+    padding-top: 16px;
+}
+
+.review-error {
+    color: #c92a2a;
+    font-size: 13px;
+    margin-top: 10px;
+}
