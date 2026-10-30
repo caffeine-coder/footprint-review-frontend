@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Modal, Badge, Button, Textarea, Group, Center, Loader } from "@mantine/core";
 import type { ProductFootPrint } from "../data/footPrintSlice";
-import "./FootprintDetails.css";
+import "./FootPrintDetails.css";
 
 interface FootprintDetailsProps {
     opened: boolean;

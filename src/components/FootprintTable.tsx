@@ -1,6 +1,6 @@
 import { Table, Badge, Button, Group, Pagination } from "@mantine/core";
 import type { ProductFootPrint } from "../data/footPrintSlice";
-import "./FootprintTable.css";
+import "./FootPrintTable.css";
 
 interface FootprintTableProps {
     footprintData: ProductFootPrint[];

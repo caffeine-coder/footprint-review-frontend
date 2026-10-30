@@ -2,7 +2,7 @@
 import axios from "axios";
 import type { ProductFootPrint } from "../data/footPrintSlice";
 
-const url = "http://localhost:8080/api/footprints";
+const url = "/api/footprints";
 
 export interface FootprintPage {
     items: ProductFootPrint[];
