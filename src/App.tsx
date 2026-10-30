@@ -7,6 +7,7 @@ import { setFootprintData, setSelectedFootprint, setLoading, setError } from "./
 import FootprintTable from "./components/FootprintTable";
 import FootprintDetails from "./components/FootPrintDetails";
 import "./App.css";
+import useDebouncedSearch from "./hooks/useDebouncedSearch";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -14,6 +15,7 @@ function App() {
 
   const [status, setStatus] = useState("ALL");
   const [searchText, setSearchText] = useState("");
+  const debouncedSearch = useDebouncedSearch(searchText);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [refresh, setRefresh] = useState(0);
@@ -25,6 +27,7 @@ function App() {
   const [reviewError, setReviewError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (searchText.trim() !== debouncedSearch) return;
     let active = true;
 
     async function fetchData() {
@@ -32,7 +35,7 @@ function App() {
       dispatch(setError(null));
 
       try {
-        const data = await getFootprints(page, status, searchText);
+        const data = await getFootprints(page, status, debouncedSearch);
 
         if (active) {
           dispatch(setFootprintData(data.items));
@@ -55,7 +58,7 @@ function App() {
     return () => {
       active = false;
     };
-  }, [dispatch, page, status, searchText, refresh]);
+  }, [dispatch, page, status, searchText, debouncedSearch, refresh]);
 
   async function handleView(id: number) {
     setOpened(true);
@@ -91,10 +94,6 @@ function App() {
     } finally {
       setReviewLoading(false);
     }
-  }
-
-  if (loading && footprintData.length === 0) {
-    return <Center h={300}><Loader size="lg" /></Center>;
   }
 
   return (
@@ -138,11 +137,7 @@ function App() {
 
       <FootprintDetails
         opened={opened}
-        onClose={() => {
-          if (reviewLoading) return;
-          setOpened(false);
-          setReviewError(null);
-        }}
+        onClose={() => setOpened(false)}
         footprint={selectedFootprint}
         loading={detailLoading}
         error={detailError}
