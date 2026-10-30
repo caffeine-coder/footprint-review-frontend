@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Modal, Badge, Button, Textarea, Group } from "@mantine/core";
+import { Modal, Badge, Button, Textarea, Group, Center, Loader } from "@mantine/core";
 import type { ProductFootPrint } from "../data/footPrintSlice";
 import "./FootprintDetails.css";
 
@@ -32,7 +32,7 @@ function FootprintDetails({ opened, onClose, footprint, loading, error, reviewLo
 
     return (
         <Modal opened={opened} onClose={handleClose} title="Product Details" centered size="md" radius="md">
-            {loading && <p>Loading...</p>}
+            {loading && <Center py={40}><Loader size="md" /></Center>}
             {error && <p>{error}</p>}
 
             {!loading && !error && footprint && (
@@ -87,6 +87,7 @@ function FootprintDetails({ opened, onClose, footprint, loading, error, reviewLo
                             {reviewError && <p className="review-error">{reviewError}</p>}
 
                             <Group justify="flex-end" gap="md" mt="lg" mb="sm">
+                                {reviewLoading && <Loader size="sm" />}
                                 <Button color="red" variant="light" disabled={reviewLoading} onClick={() => onReview("REJECTED", comment)}>
                                     Reject
                                 </Button>
@@ -94,7 +95,6 @@ function FootprintDetails({ opened, onClose, footprint, loading, error, reviewLo
                                     Approve
                                 </Button>
                             </Group>
-                            {reviewLoading && <p>Saving review...</p>}
                         </div>
                     )}
                 </div>

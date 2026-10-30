@@ -1,14 +1,16 @@
-
-import { Table, Badge, Button, Group } from "@mantine/core";
+import { Table, Badge, Button, Group, Pagination } from "@mantine/core";
 import type { ProductFootPrint } from "../data/footPrintSlice";
 import "./FootprintTable.css";
 
 interface FootprintTableProps {
     footprintData: ProductFootPrint[];
     onView: (id: number) => void;
+    page: number;
+    total: number;
+    onPageChange: (page: number) => void;
 }
 
-function FootprintTable({ footprintData, onView }: FootprintTableProps) {
+function FootprintTable({ footprintData, onView, page, total, onPageChange }: FootprintTableProps) {
     const reviewRows = footprintData.map((footprint) => {
         const highEmissions = footprint.emissionsKgCo2e >= 5000;
         const highUncertainty = footprint.uncertaintyPercent >= 30;
@@ -71,6 +73,16 @@ function FootprintTable({ footprintData, onView }: FootprintTableProps) {
                         )}
                     </Table.Tbody>
                 </Table>
+            </div>
+            <div className="table-pagination">
+                <span>Showing {footprintData.length} of {total} submissions</span>
+                <Pagination
+                    total={Math.max(1, Math.ceil(total / 10))}
+                    value={page}
+                    onChange={onPageChange}
+                    size="sm"
+                    withEdges
+                />
             </div>
         </div>
     );

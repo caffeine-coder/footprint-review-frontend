@@ -59,3 +59,17 @@
     padding: 40px;
     color: #9ca3af;
 }
+
+.table-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 24px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.table-pagination span {
+    font-size: 13px;
+    color: #6b7280;
+}

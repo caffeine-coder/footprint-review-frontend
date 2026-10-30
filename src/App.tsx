@@ -1,9 +1,9 @@
 
 import { useEffect, useState } from "react";
-import { Select, TextInput } from "@mantine/core";
+import { Select, TextInput, Center, Loader } from "@mantine/core";
 import { useAppDispatch, useAppSelector } from "./data/hooks";
 import { getFootprints, getFootprintById, reviewFootprint } from "./api/footprintApi";
-import { setFootprintData, setSelectedFootprint, setLoading, setError, updateFootprint } from "./data/footPrintSlice";
+import { setFootprintData, setSelectedFootprint, setLoading, setError } from "./data/footPrintSlice";
 import FootprintTable from "./components/FootprintTable";
 import FootprintDetails from "./components/FootPrintDetails";
 import "./App.css";
@@ -14,6 +14,10 @@ function App() {
 
   const [status, setStatus] = useState("ALL");
   const [searchText, setSearchText] = useState("");
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [refresh, setRefresh] = useState(0);
+
   const [opened, setOpened] = useState(false);
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailError, setDetailError] = useState<string | null>(null);
@@ -21,23 +25,37 @@ function App() {
   const [reviewError, setReviewError] = useState<string | null>(null);
 
   useEffect(() => {
+    let active = true;
+
     async function fetchData() {
       dispatch(setLoading(true));
       dispatch(setError(null));
 
       try {
-        const data = await getFootprints();
-        dispatch(setFootprintData(data));
+        const data = await getFootprints(page, status, searchText);
+
+        if (active) {
+          dispatch(setFootprintData(data.items));
+          setTotal(data.total);
+
+          if (page > 1 && data.items.length === 0) {
+            setPage(page - 1);
+          }
+        }
       } catch (error) {
         console.log(error);
-        dispatch(setError("Failed to fetch footprints"));
+        if (active) dispatch(setError("Failed to fetch footprints"));
       } finally {
-        dispatch(setLoading(false));
+        if (active) dispatch(setLoading(false));
       }
     }
 
     fetchData();
-  }, [dispatch]);
+
+    return () => {
+      active = false;
+    };
+  }, [dispatch, page, status, searchText, refresh]);
 
   async function handleView(id: number) {
     setOpened(true);
@@ -65,8 +83,8 @@ function App() {
 
     try {
       const data = await reviewFootprint(selectedFootprint.id, status, comment);
-      dispatch(updateFootprint(data));
       dispatch(setSelectedFootprint(data));
+      setRefresh(value => value + 1);
     } catch (error) {
       console.log(error);
       setReviewError("Failed to update review");
@@ -75,17 +93,9 @@ function App() {
     }
   }
 
-  const filteredData = footprintData.filter((footprint) => {
-    const statusMatch = status === "ALL" || footprint.status === status;
-    const search = searchText.trim().toLowerCase();
-    const nameMatch = footprint.productName.toLowerCase().includes(search);
-    const supplierMatch = footprint.supplierName.toLowerCase().includes(search);
-
-    return statusMatch && (nameMatch || supplierMatch);
-  });
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+  if (loading && footprintData.length === 0) {
+    return <Center h={300}><Loader size="lg" /></Center>;
+  }
 
   return (
     <div>
@@ -96,22 +106,40 @@ function App() {
           label="Review Status"
           data={["ALL", "PENDING", "APPROVED", "REJECTED"]}
           value={status}
-          onChange={(value) => setStatus(value ?? "ALL")}
+          onChange={(value) => {
+            setStatus(value ?? "ALL");
+            setPage(1);
+          }}
         />
         <TextInput
           className="search-field"
           label="Search"
           placeholder="Search product or supplier"
           value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
+          onChange={(e) => {
+            setSearchText(e.target.value);
+            setPage(1);
+          }}
         />
       </div>
 
-      <FootprintTable footprintData={filteredData} onView={handleView} />
+      {error && <p>{error}</p>}
+      {loading ? (
+        <Center py={60}><Loader size="md" /></Center>
+      ) : !error && (
+        <FootprintTable
+          footprintData={footprintData}
+          onView={handleView}
+          page={page}
+          total={total}
+          onPageChange={setPage}
+        />
+      )}
 
       <FootprintDetails
         opened={opened}
         onClose={() => {
+          if (reviewLoading) return;
           setOpened(false);
           setReviewError(null);
         }}

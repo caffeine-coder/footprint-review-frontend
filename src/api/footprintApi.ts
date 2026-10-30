@@ -4,8 +4,17 @@ import type { ProductFootPrint } from "../data/footPrintSlice";
 
 const url = "http://localhost:8080/api/footprints";
 
-export async function getFootprints() {
-    const response = await axios.get<ProductFootPrint[]>(url);
+export interface FootprintPage {
+    items: ProductFootPrint[];
+    total: number;
+    page: number;
+    size: number;
+}
+
+export async function getFootprints(page: number, status: string, search: string) {
+    const response = await axios.get<FootprintPage>(url, {
+        params: { page: page - 1, size: 10, status, search }
+    });
     return response.data;
 }
 
