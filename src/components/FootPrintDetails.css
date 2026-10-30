@@ -38,7 +38,6 @@
     font-weight: 500;
 }
 
-
 .review-section {
     border-top: 1px solid #e5e7eb;
     margin-top: 16px;
@@ -49,4 +48,44 @@
     color: #c92a2a;
     font-size: 13px;
     margin-top: 10px;
+}
+
+.history-section {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.history-section h4 {
+    margin: 0 0 16px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.history-entry {
+    padding: 2px 0 16px 14px;
+    border-left: 2px solid #e5e7eb;
+}
+
+.history-entry+.history-entry {
+    margin-top: 4px;
+}
+
+.history-entry strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.history-entry span {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.history-entry p {
+    margin: 8px 0 0;
+    font-size: 13px;
+    color: #4b5563;
 }

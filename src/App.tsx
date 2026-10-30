@@ -1,17 +1,24 @@
-
 import { useEffect, useState } from "react";
-import { Select, TextInput, Center, Loader } from "@mantine/core";
+import { Select, TextInput, Center, Loader, Group, Button, Text } from "@mantine/core";
+import axios from "axios";
 import { useAppDispatch, useAppSelector } from "./data/hooks";
 import { getFootprints, getFootprintById, reviewFootprint } from "./api/footprintApi";
+import { getCurrentUser, login, logout, type AuthUser } from "./api/authApi";
 import { setFootprintData, setSelectedFootprint, setLoading, setError } from "./data/footPrintSlice";
 import FootprintTable from "./components/FootprintTable";
 import FootprintDetails from "./components/FootPrintDetails";
-import "./App.css";
+import Login from "./components/Login";
 import useDebouncedSearch from "./hooks/useDebouncedSearch";
+import "./App.css";
 
 function App() {
   const dispatch = useAppDispatch();
   const { footprintData, selectedFootprint, loading, error } = useAppSelector(state => state.footprints);
+
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [logoutLoading, setLogoutLoading] = useState(false);
 
   const [status, setStatus] = useState("ALL");
   const [searchText, setSearchText] = useState("");
@@ -26,8 +33,32 @@ function App() {
   const [reviewLoading, setReviewLoading] = useState(false);
   const [reviewError, setReviewError] = useState<string | null>(null);
 
+  const canReview = user?.role === "ADMIN" || user?.role === "EDITOR";
+
   useEffect(() => {
-    if (searchText.trim() !== debouncedSearch) return;
+    let active = true;
+
+    getCurrentUser()
+      .then(data => {
+        if (active) setUser(data);
+      })
+      .catch(error => {
+        if (active && (!axios.isAxiosError(error) || error.response?.status !== 401)) {
+          setAuthError("Unable to connect to the server");
+        }
+      })
+      .finally(() => {
+        if (active) setAuthLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!user || searchText.trim() !== debouncedSearch) return;
+
     let active = true;
 
     async function fetchData() {
@@ -58,7 +89,32 @@ function App() {
     return () => {
       active = false;
     };
-  }, [dispatch, page, status, searchText, debouncedSearch, refresh]);
+  }, [dispatch, user, page, status, searchText, debouncedSearch, refresh]);
+
+  async function handleLogin(email: string, password: string) {
+    const data = await login(email, password);
+    setUser(data);
+    setAuthError(null);
+  }
+
+  async function handleLogout() {
+    setLogoutLoading(true);
+    setAuthError(null);
+
+    try {
+      await logout();
+      setUser(null);
+      setOpened(false);
+      setPage(1);
+      dispatch(setFootprintData([]));
+      dispatch(setSelectedFootprint(null));
+    } catch (error) {
+      console.log(error);
+      setAuthError("Failed to log out");
+    } finally {
+      setLogoutLoading(false);
+    }
+  }
 
   async function handleView(id: number) {
     setOpened(true);
@@ -79,7 +135,7 @@ function App() {
   }
 
   async function handleReview(status: "APPROVED" | "REJECTED", comment: string) {
-    if (!selectedFootprint || reviewLoading) return;
+    if (!selectedFootprint || reviewLoading || !canReview) return;
 
     setReviewLoading(true);
     setReviewError(null);
@@ -96,9 +152,28 @@ function App() {
     }
   }
 
+  if (authLoading) {
+    return <Center mih="75vh"><Loader size="md" /></Center>;
+  }
+
+  if (!user) {
+    return <Login onLogin={handleLogin} serverError={authError} />;
+  }
+
   return (
     <div>
-      <h2>Product Footprint Review</h2>
+      <Group justify="space-between" align="center" mb="lg">
+        <h2>Product Footprint Review</h2>
+        <Group gap="md">
+          <Text size="sm">{user.name} ({user.role})</Text>
+          <Button variant="default" size="sm" loading={logoutLoading} onClick={handleLogout}>
+            Logout
+          </Button>
+        </Group>
+      </Group>
+
+      {authError && <Text c="red" size="sm" mb="md">{authError}</Text>}
+
       <div className="filter-container">
         <Select
           className="filter-field"
@@ -143,6 +218,7 @@ function App() {
         error={detailError}
         reviewLoading={reviewLoading}
         reviewError={reviewError}
+        canReview={canReview}
         onReview={handleReview}
       />
     </div>
