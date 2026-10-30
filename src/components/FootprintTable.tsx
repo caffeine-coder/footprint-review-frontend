@@ -22,18 +22,14 @@ function FootprintTable({ footprintData, onView, page, total, onPageChange }: Fo
                 <Table.Td>{footprint.emissionsKgCo2e.toLocaleString()} kg CO₂e</Table.Td>
                 <Table.Td>{footprint.uncertaintyPercent}%</Table.Td>
                 <Table.Td>
-                    <Badge
-                        color={footprint.status === "APPROVED" ? "green" : footprint.status === "REJECTED" ? "red" : "yellow"}
-                        variant="light"
-                        radius="sm"
-                    >
+                    <Badge className={`badge ${footprint.status.toLowerCase()}`} variant="default" radius="sm">
                         {footprint.status}
                     </Badge>
                 </Table.Td>
                 <Table.Td>
                     <Group gap={6}>
-                        {highEmissions && <Badge color="red" variant="light">High Emissions</Badge>}
-                        {highUncertainty && <Badge color="orange" variant="light">High Uncertainty</Badge>}
+                        {highEmissions && <Badge className="badge emissions" variant="default" radius="sm">High Emissions</Badge>}
+                        {highUncertainty && <Badge className="badge uncertainty" variant="default" radius="sm">High Uncertainty</Badge>}
                         {!highEmissions && !highUncertainty && "—"}
                     </Group>
                 </Table.Td>

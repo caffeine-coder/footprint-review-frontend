@@ -45,3 +45,41 @@ h2 {
 .search-field {
     width: 300px;
 }
+
+.badge {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: capitalize;
+    letter-spacing: 0;
+    border: 1px solid transparent;
+}
+
+.badge.pending {
+    background: #f3f4f6;
+    color: #596373;
+    border-color: #e2e5e9;
+}
+
+.badge.approved {
+    background: #edf5f0;
+    color: #397253;
+    border-color: #d3e5d9;
+}
+
+.badge.rejected {
+    background: #f8efef;
+    color: #955752;
+    border-color: #ead8d6;
+}
+
+.badge.emissions {
+    background: #f7f0ef;
+    color: #8c6158;
+    border-color: #e8d9d5;
+}
+
+.badge.uncertainty {
+    background: #f7f3e9;
+    color: #846d42;
+    border-color: #e8dfca;
+}

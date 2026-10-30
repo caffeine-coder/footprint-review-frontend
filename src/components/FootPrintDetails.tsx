@@ -17,13 +17,6 @@ interface FootprintDetailsProps {
 
 function FootprintDetails({ opened, onClose, footprint, loading, error, reviewLoading, reviewError, onReview }: FootprintDetailsProps) {
     const [comment, setComment] = useState("");
-    let statusColor = "yellow";
-
-    if (footprint?.status === "APPROVED") {
-        statusColor = "green";
-    } else if (footprint?.status === "REJECTED") {
-        statusColor = "red";
-    }
 
     function handleClose() {
         setComment("");
@@ -39,7 +32,9 @@ function FootprintDetails({ opened, onClose, footprint, loading, error, reviewLo
                 <div className="details-container">
                     <div className="details-heading">
                         <h3>{footprint.productName}</h3>
-                        <Badge color={statusColor} variant="light" radius="sm">{footprint.status}</Badge>
+                        <Badge className={`badge ${footprint.status.toLowerCase()}`} variant="default" radius="sm">
+                            {footprint.status}
+                        </Badge>
                     </div>
 
                     <div className="details-row">
