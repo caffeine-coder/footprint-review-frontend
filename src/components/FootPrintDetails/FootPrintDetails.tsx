@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+
+import { useState } from "react";
 import { Modal, Badge, Button, Textarea, Group, Center, Loader } from "@mantine/core";
-import type { ProductFootPrint } from "../data/footPrintSlice";
-import { getReviewHistory, type ReviewHistoryItem } from "../api/footprintApi";
+import type { ProductFootPrint } from "../../data/footPrintSlice";
+import ReviewHistory from "../ReviewHistory/ReviewHistory";
 import "./FootPrintDetails.css";
 
 interface FootprintDetailsProps {
@@ -18,37 +19,6 @@ interface FootprintDetailsProps {
 
 function FootprintDetails({ opened, onClose, footprint, loading, error, reviewLoading, reviewError, canReview, onReview }: FootprintDetailsProps) {
     const [comment, setComment] = useState("");
-    const [history, setHistory] = useState<ReviewHistoryItem[]>([]);
-    const [historyLoading, setHistoryLoading] = useState(false);
-    const [historyError, setHistoryError] = useState<string | null>(null);
-
-    const footprintId = footprint?.id;
-    const reviewedAt = footprint?.reviewedAt;
-
-    useEffect(() => {
-        if (!opened || footprintId == null) return;
-
-        let active = true;
-        setHistoryLoading(true);
-        setHistoryError(null);
-        setHistory([]);
-
-        getReviewHistory(footprintId)
-            .then(data => {
-                if (active) setHistory(data);
-            })
-            .catch(error => {
-                console.log(error);
-                if (active) setHistoryError("Failed to load review history");
-            })
-            .finally(() => {
-                if (active) setHistoryLoading(false);
-            });
-
-        return () => {
-            active = false;
-        };
-    }, [opened, footprintId, reviewedAt]);
 
     function handleClose() {
         setComment("");
@@ -82,41 +52,7 @@ function FootprintDetails({ opened, onClose, footprint, loading, error, reviewLo
                         <span>{footprint.uncertaintyPercent}%</span>
                     </div>
 
-                    <div className="history-section">
-                        <h4>Review History</h4>
-
-                        {historyLoading && <Loader size="sm" />}
-                        {historyError && <p className="review-error">{historyError}</p>}
-
-                        {!historyLoading && !historyError && (
-                            <>
-                                {history.map(event => (
-                                    <div className="history-entry" key={event.id}>
-                                        <strong>
-                                            {event.action === "APPROVED" ? "Approved" : "Rejected"} by {event.reviewerName}
-                                        </strong>
-                                        <span>{new Date(event.createdAt).toLocaleString()}</span>
-                                        {event.comment && <p>{event.comment}</p>}
-                                    </div>
-                                ))}
-
-                                {history.length === 0 && footprint.reviewedAt && (
-                                    <div className="history-entry">
-                                        <strong>
-                                            {footprint.status === "APPROVED" ? "Approved" : "Rejected"} (reviewer not recorded)
-                                        </strong>
-                                        <span>{new Date(footprint.reviewedAt).toLocaleString()}</span>
-                                        {footprint.reviewComment && <p>{footprint.reviewComment}</p>}
-                                    </div>
-                                )}
-                            </>
-                        )}
-
-                        <div className="history-entry">
-                            <strong>Submission received</strong>
-                            <span>{new Date(footprint.submittedAt).toLocaleString()}</span>
-                        </div>
-                    </div>
+                    <ReviewHistory footprint={footprint} opened={opened} />
 
                     {footprint.status === "PENDING" && canReview && (
                         <div className="review-section">

@@ -5,9 +5,9 @@ import { useAppDispatch, useAppSelector } from "./data/hooks";
 import { getFootprints, getFootprintById, reviewFootprint } from "./api/footprintApi";
 import { getCurrentUser, login, logout, type AuthUser } from "./api/authApi";
 import { setFootprintData, setSelectedFootprint, setLoading, setError } from "./data/footPrintSlice";
-import FootprintTable from "./components/FootprintTable";
-import FootprintDetails from "./components/FootPrintDetails";
-import Login from "./components/Login";
+import FootprintTable from "./components/FootPrintTable/FootprintTable";
+import FootprintDetails from "./components/FootPrintDetails/FootPrintDetails";
+import Login from "./components/Login/Login";
 import useDebouncedSearch from "./hooks/useDebouncedSearch";
 import "./App.css";
 

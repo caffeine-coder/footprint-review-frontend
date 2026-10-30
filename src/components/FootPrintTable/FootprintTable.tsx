@@ -1,5 +1,5 @@
 import { Table, Badge, Button, Group, Pagination } from "@mantine/core";
-import type { ProductFootPrint } from "../data/footPrintSlice";
+import type { ProductFootPrint } from "../../data/footPrintSlice";
 import "./FootPrintTable.css";
 
 interface FootprintTableProps {
