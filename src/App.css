@@ -1,0 +1,35 @@
+:root {
+    font-family: Inter, Arial, sans-serif;
+    color-scheme: light;
+    color: #1f2937;
+    background: #f5f7fa;
+}
+
+body {
+    margin: 0;
+    display: block;
+    min-width: 320px;
+}
+
+#root {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    text-align: left;
+}
+
+h2 {
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 28px;
+    color: #111827;
+}
+
+.filter-container {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.filter-container .mantine-Select-root {
+    width: 220px;
+}

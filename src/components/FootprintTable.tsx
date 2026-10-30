@@ -1,6 +1,7 @@
 
-import { Table } from "@mantine/core";
+import { Table, Badge } from "@mantine/core";
 import type { ProductFootPrint } from "../data/footPrintSlice";
+import "./FootprintTable.css";
 
 interface FootprintTableProps {
     footprintData: ProductFootPrint[];
@@ -9,34 +10,75 @@ interface FootprintTableProps {
 function FootprintTable({ footprintData }: FootprintTableProps) {
 
     const reviewRows = footprintData.map((footprint) => (
+
         <Table.Tr key={footprint.id}>
-            <Table.Td>{footprint.productName}</Table.Td>
-            <Table.Td>{footprint.supplierName}</Table.Td>
-            <Table.Td>{footprint.emissionsKgCo2e}</Table.Td>
-            <Table.Td>{footprint.uncertaintyPercent}</Table.Td>
-            <Table.Td>{footprint.status}</Table.Td>
+
+            <Table.Td className="product-name">
+                {footprint.productName}
+            </Table.Td>
+
+            <Table.Td>
+                {footprint.supplierName}
+            </Table.Td>
+
+            <Table.Td>
+                {footprint.emissionsKgCo2e.toLocaleString()} kg CO₂e
+            </Table.Td>
+
+            <Table.Td>
+                {footprint.uncertaintyPercent}%
+            </Table.Td>
+
+            <Table.Td>
+                <Badge
+                    color={
+                        footprint.status === "APPROVED" ? "green" :
+                            footprint.status === "REJECTED" ? "red" : "yellow"
+                    }
+                    variant="light"
+                    radius="sm"
+                >
+                    {footprint.status}
+                </Badge>
+            </Table.Td>
+
         </Table.Tr>
     ));
 
     return (
-        <div>
-            <Table striped highlightOnHover withTableBorder>
-                <Table.Thead>
-                    <Table.Tr>
-                        <Table.Th>Product</Table.Th>
-                        <Table.Th>Supplier</Table.Th>
-                        <Table.Th>Emissions (kg CO₂e)</Table.Th>
-                        <Table.Th>Uncertainty (%)</Table.Th>
-                        <Table.Th>Status</Table.Th>
-                    </Table.Tr>
-                </Table.Thead>
+        <div className="footprint-table-container">
 
-                <Table.Tbody>{reviewRows}</Table.Tbody>
-            </Table>
+            <div className="table-header">
+                <h3>Product Submissions</h3>
+                <span>{footprintData.length} submissions</span>
+            </div>
 
-            {footprintData.length === 0 && (
-                <p>No footprints found</p>
-            )}
+            <div className="table-scroll">
+                <Table striped highlightOnHover verticalSpacing="md" horizontalSpacing="lg">
+
+                    <Table.Thead>
+                        <Table.Tr>
+                            <Table.Th>Product</Table.Th>
+                            <Table.Th>Supplier</Table.Th>
+                            <Table.Th>Emissions</Table.Th>
+                            <Table.Th>Uncertainty</Table.Th>
+                            <Table.Th>Review Status</Table.Th>
+                        </Table.Tr>
+                    </Table.Thead>
+
+                    <Table.Tbody>
+                        {footprintData.length > 0 ? reviewRows : (
+                            <Table.Tr>
+                                <Table.Td colSpan={5} className="empty-message">
+                                    No footprints found
+                                </Table.Td>
+                            </Table.Tr>
+                        )}
+                    </Table.Tbody>
+
+                </Table>
+            </div>
+
         </div>
     );
 }

@@ -1,7 +1,10 @@
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Select } from "@mantine/core";
+
 import { useAppDispatch, useAppSelector } from "./data/hooks";
 import { getFootprints } from "./api/footprintApi";
+
 import {
   setFootprintData,
   setLoading,
@@ -19,6 +22,8 @@ function App() {
   const { footprintData, loading, error } = useAppSelector(
     state => state.footprints
   );
+
+  const [status, setStatus] = useState("ALL");
 
   useEffect(() => {
 
@@ -41,6 +46,10 @@ function App() {
 
   }, [dispatch]);
 
+  const filteredData = footprintData.filter((footprint) =>
+    status === "ALL" || footprint.status === status
+  );
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -53,7 +62,17 @@ function App() {
     <div>
       <h2>Product Footprint Review</h2>
 
-      <FootprintTable footprintData={footprintData} />
+      <div className="filter-container">
+        <Select
+          label="Review Status"
+          placeholder="Select status"
+          data={["ALL", "PENDING", "APPROVED", "REJECTED"]}
+          value={status}
+          onChange={(value) => setStatus(value ?? "ALL")}
+        />
+      </div>
+
+      <FootprintTable footprintData={filteredData} />
     </div>
   );
 }
