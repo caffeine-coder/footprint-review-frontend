@@ -8,6 +8,8 @@ import {
   setError
 } from "./data/footPrintSlice";
 
+import FootprintTable from "./components/FootprintTable";
+
 import "./App.css";
 
 function App() {
@@ -51,33 +53,7 @@ function App() {
     <div>
       <h2>Product Footprint Review</h2>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Product</th>
-            <th>Supplier</th>
-            <th>Emissions</th>
-            <th>Uncertainty</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {footprintData.map((footprint) => (
-            <tr key={footprint.id}>
-              <td>{footprint.productName}</td>
-              <td>{footprint.supplierName}</td>
-              <td>{footprint.emissionsKgCo2e} kg CO₂e</td>
-              <td>{footprint.uncertaintyPercent}%</td>
-              <td>{footprint.status}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {footprintData.length === 0 && (
-        <p>No footprints found</p>
-      )}
+      <FootprintTable footprintData={footprintData} />
     </div>
   );
 }
