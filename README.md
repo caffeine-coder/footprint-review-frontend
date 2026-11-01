@@ -73,6 +73,13 @@ I tried to keep the implementation simple and focus on the review flow rather th
 - Didn't add client-side caching since the API already supports pagination and filtering.
 - Added a few basic tests rather than trying to cover every component.
 
+## Future improvements
+
+- More test coverage
+- Add caching for already fetched data
+- Improve API error messages shown to users.
+- Work more on accessibility
+
 ## AI usage
 
 - I used AI to understand the emissions data model because this domain was new to me, and to help set up the initial app skeleton. 
