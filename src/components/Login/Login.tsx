@@ -57,7 +57,7 @@ function Login({ onLogin, serverError }: LoginProps) {
                             required
                         />
                         {(error || serverError) && <Text c="red" size="sm">{error || serverError}</Text>}
-                        <Button type="submit" loading={loading}>Sign In</Button>
+                        <Button type="submit" loading={loading}>Log In</Button>
                     </Stack>
                 </form>
             </Paper>
