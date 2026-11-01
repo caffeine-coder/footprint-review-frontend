@@ -35,6 +35,12 @@ npm run dev
 
 Open `http://localhost:5173`.
 
+## Deployment
+
+I also created a small automation through gihtub actions to host this on AWS. Every push to main triggers a build to publish docker image to Aws ecr and it then is deployed to ec2 through a document setup. Used a subdomain from my existing portfolio domain to access the app.
+
+Open `https://footprint.thecaffeinecoder.com`
+
 ## Features
 
 - Login and role-based access
@@ -46,7 +52,9 @@ Open `http://localhost:5173`.
 
 The UI calls the backend through `/api`. Nginx handles this in Docker and Vite handles it during local development. The Docker setup uses `host.docker.internal`, so it is intended for Docker Desktop.
 
-
 ## AI usage
 
-I used AI to understand the emissions data model because this domain was new to me, and to help set up the initial app skeleton. Core logic, components and data handling were written and adjusted by me, with some implementation suggestions and debugging help from AI. I reviewed and tested the application myself and can explain how it works.
+- I used AI to understand the emissions data model because this domain was new to me, and to help set up the initial app skeleton. 
+- Used AI for automation scripts a bit to fasten the process
+- Core logic, components and data handling were completey written and adjusted by me, with some implementation suggestions and debugging help from AI. 
+- I reviewed and tested the application myself and can explain how it works.
