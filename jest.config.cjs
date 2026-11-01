@@ -1,0 +1,14 @@
+module.exports = {
+    testEnvironment: "jsdom",
+    transform: {
+        "^.+\\.tsx?$": ["ts-jest", {
+            tsconfig: {
+                module: "CommonJS",
+                moduleResolution: "node",
+                jsx: "react-jsx",
+                esModuleInterop: true,
+                types: ["jest", "node"]
+            }
+        }]
+    }
+};
