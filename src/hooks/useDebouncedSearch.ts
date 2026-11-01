@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+// I could ahve used usedeferredvalue hook for this, but
+// wanted to do it on own.
 function useDebouncedSearch(searchText: string) {
     const [debouncedSearch, setDebouncedSearch] = useState(searchText);
 

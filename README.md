@@ -2,6 +2,16 @@
 
 A small React app for reviewing product carbon footprint submissions. Stack used are React, TypeScript, Vite, Redux Toolkit, Axios and Mantine.
 
+## Stack choice
+
+- **React and TypeScript** - Used React because I'm familiar with it and TypeScript to keep the data models and component props typed.
+- **Redux Toolkit** - Used to manage the footprint data and selected submission across components.
+- **Mantine** - Good reusable components
+- **Axios** - Used for API requests and handling responses.
+- **Jest and React Testing Library** - Added for a few basic unit and component tests.
+
+I kept the project structure simple with separate folders for API calls, components, hooks and Redux state.
+
 ## Run with Docker
 
 You'll need Docker Desktop. Start the [backend](https://github.com/caffeine-coder/footprint-review-backend) first.
@@ -52,9 +62,20 @@ Open `https://footprint.thecaffeinecoder.com`
 
 The UI calls the backend through `/api`. Nginx handles this in Docker and Vite handles it during local development. The Docker setup uses `host.docker.internal`, so it is intended for Docker Desktop.
 
+## Trade-offs
+
+I tried to keep the implementation simple and focus on the review flow rather than adding too many features.
+
+- Used Mantine instead of building all the UI components from scratch.
+- Kept it as spa instead of introducing routing.
+- Used server-side pagination with a fixed page size of 10.
+- Kept the search debounce in a small custom hook.
+- Didn't add client-side caching since the API already supports pagination and filtering.
+- Added a few basic tests rather than trying to cover every component.
+
 ## AI usage
 
 - I used AI to understand the emissions data model because this domain was new to me, and to help set up the initial app skeleton. 
-- Used AI for automation scripts a bit to fasten the process
+- Used AI to refine pipeline scripts a bit to fasten the process
 - Core logic, components and data handling were completey written and adjusted by me, with some implementation suggestions and debugging help from AI. 
-- I reviewed and tested the application myself and can explain how it works.
+- To enhance readme
