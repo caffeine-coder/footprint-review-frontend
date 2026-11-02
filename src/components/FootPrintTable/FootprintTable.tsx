@@ -1,4 +1,6 @@
-import { Table, Badge, Button, Group, Pagination } from "@mantine/core";
+
+import { useMemo, useState } from "react";
+import { Table, Badge, Button, Group, Pagination, UnstyledButton } from "@mantine/core";
 import type { ProductFootPrint } from "../../data/footPrintSlice";
 import "./FootPrintTable.css";
 
@@ -10,8 +12,62 @@ interface FootprintTableProps {
     onPageChange: (page: number) => void;
 }
 
+type SortField = "productName" | "supplierName" | "emissionsKgCo2e" | "uncertaintyPercent";
+type SortDirection = "asc" | "desc";
+
 function FootprintTable({ footprintData, onView, page, total, onPageChange }: FootprintTableProps) {
-    const reviewRows = footprintData.map((footprint) => {
+    const [sortBy, setSortBy] = useState<SortField | null>(null);
+    const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+
+    function handleSort(field: SortField) {
+        if (sortBy === field) {
+            setSortDirection(prev => prev === "asc" ? "desc" : "asc");
+        } else {
+            setSortBy(field);
+            setSortDirection("asc");
+        }
+    }
+
+    const sortedData = useMemo(() => {
+        if (!sortBy) return footprintData;
+
+        const data = [...footprintData];
+
+        if (sortBy === "productName") {
+            data.sort((a, b) => a.productName.localeCompare(b.productName));
+        } else if (sortBy === "supplierName") {
+            data.sort((a, b) => a.supplierName.localeCompare(b.supplierName));
+        } else if (sortBy === "emissionsKgCo2e") {
+            data.sort((a, b) => a.emissionsKgCo2e - b.emissionsKgCo2e);
+        } else if (sortBy === "uncertaintyPercent") {
+            data.sort((a, b) => a.uncertaintyPercent - b.uncertaintyPercent);
+        }
+
+        if (sortDirection === "desc") {
+            data.reverse();
+        }
+
+        return data;
+    }, [footprintData, sortBy, sortDirection]);
+
+    function sortHeader(label: string, field: SortField) {
+        return (
+            <Table.Th
+                aria-sort={sortBy === field ? (sortDirection === "asc" ? "ascending" : "descending") : "none"}
+            >
+                <UnstyledButton
+                    className="sort-button"
+                    type="button"
+                    onClick={() => handleSort(field)}
+                    title="Sort current page"
+                >
+                    {label} {sortBy === field ? (sortDirection === "asc" ? "↑" : "↓") : "↕"}
+                </UnstyledButton>
+            </Table.Th>
+        );
+    }
+
+    const reviewRows = sortedData.map((footprint) => {
         const highEmissions = footprint.emissionsKgCo2e >= 5000;
         const highUncertainty = footprint.uncertaintyPercent >= 30;
 
@@ -46,16 +102,19 @@ function FootprintTable({ footprintData, onView, page, total, onPageChange }: Fo
         <div className="footprint-table-container">
             <div className="table-header">
                 <h3>Product Submissions</h3>
-                <span>{footprintData.length} submissions</span>
+                <span>
+                    {footprintData.length} submissions
+                    {sortBy && " · Sorting current page only"}
+                </span>
             </div>
             <div className="table-scroll">
                 <Table striped highlightOnHover verticalSpacing="md" horizontalSpacing="lg">
                     <Table.Thead>
                         <Table.Tr>
-                            <Table.Th>Product</Table.Th>
-                            <Table.Th>Supplier</Table.Th>
-                            <Table.Th>Emissions</Table.Th>
-                            <Table.Th>Uncertainty</Table.Th>
+                            {sortHeader("Product", "productName")}
+                            {sortHeader("Supplier", "supplierName")}
+                            {sortHeader("Emissions", "emissionsKgCo2e")}
+                            {sortHeader("Uncertainty", "uncertaintyPercent")}
                             <Table.Th>Review Status</Table.Th>
                             <Table.Th>Risk Flags</Table.Th>
                             <Table.Th>Actions</Table.Th>
